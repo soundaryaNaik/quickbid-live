@@ -5,15 +5,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --------------------
-// IN-MEMORY STORAGE
-// --------------------
 let drivers = [];
 let rides = [];
 
-// --------------------
-// ADD DRIVER
-// --------------------
 app.post("/drivers", (req, res) => {
   const { name, location } = req.body;
 
@@ -32,9 +26,6 @@ app.post("/drivers", (req, res) => {
   });
 });
 
-// --------------------
-// REQUEST RIDE
-// --------------------
 app.post("/ride", (req, res) => {
   const { user_location } = req.body;
 
@@ -45,7 +36,6 @@ app.post("/ride", (req, res) => {
     if (!d.is_available) return;
 
     const dist = Math.abs(d.location - user_location);
-
     if (dist < minDistance) {
       minDistance = dist;
       nearest = d;
@@ -58,12 +48,6 @@ app.post("/ride", (req, res) => {
 
   nearest.is_available = false;
 
-  rides.push({
-    user_location,
-    driver_id: nearest.id,
-    status: "assigned",
-  });
-
   res.json({
     message: "Driver assigned",
     driver: nearest,
@@ -71,9 +55,6 @@ app.post("/ride", (req, res) => {
   });
 });
 
-// --------------------
-// START SERVER
-// --------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log("🚀 Server running on port", PORT);
